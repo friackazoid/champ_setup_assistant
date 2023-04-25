@@ -28,7 +28,7 @@ import os, sys
 import shutil
 import json
 
-from package_creator import PackageCreator
+from ..package_creator import PackageCreator
 from jinja2 import Environment, FileSystemLoader
 from python_qt_binding.QtGui import *
 from python_qt_binding.QtCore import *
@@ -37,13 +37,13 @@ try:
 except ImportError:
     pass
 
-import rospkg
+from ament_index_python.packages import get_package_share_directory
 
 class CodeGenWidget(QWidget):
     def __init__(self, main):
         super(QWidget, self).__init__()
         self.main = main
-        self.proj_path = rospkg.RosPack().get_path('champ_setup_assistant')
+        self.proj_path = get_package_share_directory('champ_setup_assistant')
 
         self.column = QHBoxLayout()
         self.row = QVBoxLayout()
@@ -54,7 +54,9 @@ class CodeGenWidget(QWidget):
         self.row.addWidget(self.tab_label)
 
         #add gif https://gist.github.com/Svenito/4000025
-        img_path = os.path.dirname(sys.modules['__main__'].__file__) + "/../docs/images/champ_running.gif"
+        #img_path = os.path.dirname(sys.modules['__main__'].__file__) + "/../docs/images/champ_running.gif"
+        img_path = self.proj_path + "/docs/images/champ_running.gif"
+
         self.movie = QMovie(img_path, QByteArray(), self)
         size = self.movie.scaledSize()
         self.movie_screen = QLabel()

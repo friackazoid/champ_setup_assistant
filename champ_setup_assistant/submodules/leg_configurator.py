@@ -31,7 +31,7 @@ try:
 except ImportError:
     pass
 
-from joint_configurator import JointConfigurator
+from .joint_configurator import JointConfigurator
 
 class LegConfigurator(QWidget):
     link_added = Signal(str, int, int)

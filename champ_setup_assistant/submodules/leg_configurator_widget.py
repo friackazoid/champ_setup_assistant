@@ -32,8 +32,8 @@ try:
 except ImportError:
     pass
 
-from leg_configurator import LegConfigurator
-from config_predict import ConfigPredict
+from .leg_configurator import LegConfigurator
+from .config_predict import ConfigPredict
 
 class LegConfiguratorWidget(QWidget):
     def __init__(self, main):

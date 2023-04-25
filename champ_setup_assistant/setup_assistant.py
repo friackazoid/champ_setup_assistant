@@ -32,13 +32,13 @@ try:
 except ImportError:
     pass
 
-from file_browser_widget import FileBrowserWidget
-from rviz_widget import RvizWidget
-from leg_configurator_widget import LegConfiguratorWidget
-from gait_configurator_widget import GaitConfiguratorWidget
-from code_gen_widget import CodeGenWidget
-from urdf_parser import URDFParser
-from link_list_widget import LinkListWidget
+from .submodules.file_browser_widget import FileBrowserWidget
+from .submodules.rviz_widget import RvizWidget
+from .submodules.leg_configurator_widget import LegConfiguratorWidget
+from .submodules.gait_configurator_widget import GaitConfiguratorWidget
+from .submodules.code_gen_widget import CodeGenWidget
+from .submodules.urdf_parser import URDFParser
+from .submodules.link_list_widget import LinkListWidget
 
 class SetupAssistant(QWidget):
     def __init__(self):
@@ -73,10 +73,14 @@ class SetupAssistant(QWidget):
 
         self.setLayout(self.row)
 
-if __name__ == '__main__':
+def main():
     app = QApplication( sys.argv )
 
     sa = SetupAssistant()
     sa.show()
 
     sys.exit(app.exec_())
+
+if __name__ == '__main__':
+    main()
+

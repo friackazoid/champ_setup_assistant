@@ -37,11 +37,11 @@ try:
 except ImportError:
     pass
 
-import rospkg
+from ament_index_python.packages import get_package_share_directory
 
 class PackageCreator():
     def __init__(self, update=False):
-        self.proj_path = rospkg.RosPack().get_path('champ_setup_assistant')
+        self.proj_path = get_package_share_directory('champ_setup_assistant')
 
         self.package_path = ""
         self.package_joints_map_path = ""

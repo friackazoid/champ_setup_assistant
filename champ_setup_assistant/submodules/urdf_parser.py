@@ -24,10 +24,10 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 '''
 
-import roslib; roslib.load_manifest('urdfdom_py')
-import rospy
+#import ament_index_python; roslib.load_manifest('urdfdom_py')
+import rclpy
 from urdf_parser_py.urdf import URDF
-from rosparam import upload_params
+#from rosparam import upload_params
 from yaml import load
 import yaml
 from difflib import SequenceMatcher 
@@ -171,7 +171,9 @@ class URDFParser():
                 return xyz, rpy
     
     def link_has_child(self, link_name):
-        return self.robot.child_map.has_key(link_name)
+        if link_name not in self.robot.child_map:
+            return False
+        return True
 
     def link_attached_to_base(self, link_name):
         attached_joint, parent_link = self.robot.parent_map[link_name]
@@ -201,6 +203,7 @@ class URDFParser():
     def get_end_links(self):
         end_links = []
         for link in self.link_names:
+            print(link)
             #check if this link has a child
             if not self.link_has_child(link) and not self.link_attached_to_base(link):
                 end_links.append(link)

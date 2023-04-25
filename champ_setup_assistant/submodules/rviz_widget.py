@@ -32,8 +32,11 @@ try:
 except ImportError:
     pass
 
-import rviz
-import roslaunch
+from pathlib import Path 
+import rviz2_py
+from ament_index_python.packages import get_package_share_directory
+#from rviz2_py import *
+#import roslaunch
 
 class RvizWidget(QWidget):
     urdf_loaded = Signal()
@@ -46,21 +49,23 @@ class RvizWidget(QWidget):
 
         self.using_urdf = False
 
-        rviz_config_path = str(os.path.dirname(sys.path[0]) + "/config/setup_assistant.rviz")
-        description_launch_path = str(os.path.dirname(sys.path[0]) + "/launch/description.launch")
+        rviz_config_path = get_package_share_directory('champ_setup_assistant') + "/config/setup_assistant.rviz"
+        #description_launch_path = str(os.path.dirname(sys.path[0]) + "/launch/description.launch")
 
         self.main.file_browser.new_urdf.connect(self.on_urdf_path_load)
 
         self.column = QHBoxLayout()
         self.row = QVBoxLayout()
 
-        self.frame = rviz.VisualizationFrame()
+        self.frame = rviz2_py.viz.RvizVisualizationFrame('rviz2','')
         self.frame.setSplashPath("")
-        self.frame.initialize()
+        self.frame.setApp(QApplication.instance())
+        self.frame.initialize('')
 
-        reader = rviz.YamlConfigReader()
-        config = rviz.Config()
+        reader = rviz2_py.common.YamlConfigReader()
+        config = rviz2_py.common.Config()
         reader.readFile(config, rviz_config_path)
+        #reader.readFile(config, os.path.join( str(Path.home()), '.rviz2/default.rviz') )
 
         self.frame.load(config)
         self.frame.setMenuBar(None)
@@ -69,24 +74,27 @@ class RvizWidget(QWidget):
 
         self.manager = self.frame.getManager()
 
-        self.robot_model_display = self.manager.getRootDisplayGroup().getDisplayAt(2) 
-        self.robot_model_display.setBool(False)
+        print (self.manager.getRootDisplayGroup().numDisplays())
+        print (self.manager.getViewManager().getNumViews())
 
-        self.link_highlighter = self.robot_model_display.subProp("Highlight Link")
-        self.link_unhighlighter = self.robot_model_display.subProp("Unhighlight Link")
+        #self.robot_model_display = self.manager.getRootDisplayGroup().getDisplayAt( 0 ) 
+        #self.robot_model_display.setBool(False)
 
-        self.column.addWidget(self.frame)
+        #self.link_highlighter = self.robot_model_display.subProp("Highlight Link")
+        #self.link_unhighlighter = self.robot_model_display.subProp("Unhighlight Link")
+
+        self.column.addWidget(self.frame.getRenderPanel())
 
         self.row.addLayout(self.column)
         self.setLayout(self.row)
 
-        self.highlighted_link = None
+        #self.highlighted_link = None
 
-        self.description_launch_args = [description_launch_path, "description_file:foo"]
+        #self.description_launch_args = [description_launch_path, "description_file:foo"]
         
-        description_loader_uuid = roslaunch.rlutil.get_or_generate_uuid(None, False)
-        roslaunch.configure_logging(description_loader_uuid)
-        self.description_launcher = roslaunch.parent.ROSLaunchParent(description_loader_uuid, [self.description_launch_args[0]])
+        #description_loader_uuid = roslaunch.rlutil.get_or_generate_uuid(None, False)
+        #roslaunch.configure_logging(description_loader_uuid)
+        #self.description_launcher = roslaunch.parent.ROSLaunchParent(description_loader_uuid, [self.description_launch_args[0]])
 
     def highlight_link(self, link_name):
         if link_name != None and link_name != self.highlighted_link:
@@ -101,14 +109,14 @@ class RvizWidget(QWidget):
 
     def update_urdf_file(self, urdf_path):
         path_arg = "description_file:" + str(urdf_path)
-        self.description_launch_args[1] = path_arg
+        #self.description_launch_args[1] = path_arg
 
     def launch_file(self, urdf_path):
         #this is a hack to pass urdf file
         os.environ["CHAMP_SETUP_ASSISTANT_URDF"] = urdf_path
 
-        self.description_launcher.shutdown()
-        self.description_launcher.start()
+        #self.description_launcher.shutdown()
+        #self.description_launcher.start()
 
     def load_robot_description(self, fixed_frame, urdf_path):
         self.update_urdf_file(urdf_path)

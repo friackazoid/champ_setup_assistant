@@ -31,7 +31,7 @@ try:
 except ImportError:
     pass
 
-from joint_configurator import JointConfigurator
+from .joint_configurator import JointConfigurator
 import os
 import numpy as np
 

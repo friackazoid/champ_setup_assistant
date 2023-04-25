@@ -31,7 +31,7 @@ try:
 except ImportError:
     pass
 
-from link_list_widget import LinkListWidget
+from .link_list_widget import LinkListWidget
 
 class AddDeleteButtonWidget(QWidget):
     def __init__(self):
