@@ -74,21 +74,19 @@ class RvizWidget(QWidget):
 
         self.manager = self.frame.getManager()
 
-        print (self.manager.getRootDisplayGroup().numDisplays())
-        print (self.manager.getViewManager().getNumViews())
+        self.robot_model_display = self.manager.getRootDisplayGroup().getDisplayAt( 2 ) 
+        self.robot_model_display.setBool(False)
 
-        #self.robot_model_display = self.manager.getRootDisplayGroup().getDisplayAt( 0 ) 
-        #self.robot_model_display.setBool(False)
-
-        #self.link_highlighter = self.robot_model_display.subProp("Highlight Link")
-        #self.link_unhighlighter = self.robot_model_display.subProp("Unhighlight Link")
+        self.link_highlighter = self.robot_model_display.subProp("Highlight Link")
+        self.link_unhighlighter = self.robot_model_display.subProp("Unhighlight Link")
+        self.urdf = self.robot_model_display.subProp("Robot Description")
 
         self.column.addWidget(self.frame.getRenderPanel())
 
         self.row.addLayout(self.column)
         self.setLayout(self.row)
 
-        #self.highlighted_link = None
+        self.highlighted_link = None
 
         #self.description_launch_args = [description_launch_path, "description_file:foo"]
         
@@ -111,16 +109,25 @@ class RvizWidget(QWidget):
         path_arg = "description_file:" + str(urdf_path)
         #self.description_launch_args[1] = path_arg
 
+
     def launch_file(self, urdf_path):
         #this is a hack to pass urdf file
         os.environ["CHAMP_SETUP_ASSISTANT_URDF"] = urdf_path
+        #f = open(urdf_path,'r')
+        #urdf = f.read()
+        self.urdf.setValue(urdf_path)
+        #f.close()
 
         #self.description_launcher.shutdown()
         #self.description_launcher.start()
 
     def load_robot_description(self, fixed_frame, urdf_path):
-        self.update_urdf_file(urdf_path)
+        print(fixed_frame)
+        print (urdf_path)
+        #self.update_urdf_file(urdf_path)
+        #print("update_urdf")
         self.launch_file(urdf_path)
+        print("launch_file")
         self.robot_model_display.setBool(True)
         self.frame.getManager().setFixedFrame(fixed_frame)
 
